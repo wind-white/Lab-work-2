@@ -4,6 +4,8 @@
 #include <ctime>
 #include <cmath>
 
+using namespace sf;
+
 int main()
 {
 	// Определение некоторых переменных и констант
@@ -16,17 +18,17 @@ int main()
 	float angle = 0.0;
 
 	// Установка урованю мультисэмплинга
-	sf::ContextSettings settings;
+	ContextSettings settings;
 	settings.antialiasingLevel = 8;
 
 	// Создание окна приложения
-	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "SFML Analog Clock", sf::Style::Close, settings);
+	RenderWindow window(VideoMode(screenWidth, screenHeight), "SFML Analog Clock", Style::Close, settings);
 
 	// Определение центра окна
-	sf::Vector2f windowCenter = sf::Vector2f(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
+	Vector2f windowCenter = Vector2f(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
 
 	// Создание списка для точек для часов
-	sf::CircleShape dot[60];
+	CircleShape dot[60];
 
 	// Создание точек и помещение их в самые правые позиции
 	for (int i = 0; i<60; i++)
@@ -35,10 +37,10 @@ int main()
 		y = (clockCircleSize - 10) * sin(angle);
 
 		if (i % 5 == 0)
-			dot[i] = sf::CircleShape(3);
+			dot[i] = CircleShape(3);
 		else
-			dot[i] = sf::CircleShape(1);
-		dot[i].setFillColor(sf::Color::Black);
+			dot[i] = CircleShape(1);
+		dot[i].setFillColor(Color::Black);
 		dot[i].setOrigin(dot[i].getGlobalBounds().width / 2, dot[i].getGlobalBounds().height / 2);
 		dot[i].setPosition(x + window.getSize().x / 2, y + window.getSize().y / 2);
 
@@ -46,30 +48,30 @@ int main()
 	}
 
 	// Создание контура часов
-	sf::CircleShape clockCircle(clockCircleSize);
+	CircleShape clockCircle(clockCircleSize);
 
 	clockCircle.setPointCount(100);
 	clockCircle.setOutlineThickness(clockCircleThickness);
-	clockCircle.setOutlineColor(sf::Color::Black);
+	clockCircle.setOutlineColor(Color::Black);
 	clockCircle.setOrigin(clockCircle.getGlobalBounds().width / 2, clockCircle.getGlobalBounds().height / 2);
 	clockCircle.setPosition(window.getSize().x / 2 + clockCircleThickness, window.getSize().y / 2 + clockCircleThickness);
 
 	// Создание другого круга для центра
-	sf::CircleShape centerCircle(10);
+	CircleShape centerCircle(10);
 
 	centerCircle.setPointCount(100);
-	centerCircle.setFillColor(sf::Color::Red);
+	centerCircle.setFillColor(Color::Red);
 	centerCircle.setOrigin(centerCircle.getGlobalBounds().width / 2, centerCircle.getGlobalBounds().height / 2);
 	centerCircle.setPosition(windowCenter);
 
 	// Создание часов, минут и секунд
-	sf::RectangleShape hourHand(sf::Vector2f(5, 180));
-	sf::RectangleShape minuteHand(sf::Vector2f(3, 240));
-	sf::RectangleShape secondsHand(sf::Vector2f(2, 250));
+	RectangleShape hourHand(Vector2f(5, 180));
+	RectangleShape minuteHand(Vector2f(3, 240));
+	RectangleShape secondsHand(Vector2f(2, 250));
 
-	hourHand.setFillColor(sf::Color::Black);
-	minuteHand.setFillColor(sf::Color::Black);
-	secondsHand.setFillColor(sf::Color::Red);
+	hourHand.setFillColor(Color::Black);
+	minuteHand.setFillColor(Color::Black);
+	secondsHand.setFillColor(Color::Red);
 
 	hourHand.setOrigin(hourHand.getGlobalBounds().width / 2, hourHand.getGlobalBounds().height - 25);
 	minuteHand.setOrigin(minuteHand.getGlobalBounds().width / 2, minuteHand.getGlobalBounds().height - 25);
@@ -80,30 +82,30 @@ int main()
 	secondsHand.setPosition(windowCenter);
 
 	// Создание звукового эффекта
-	sf::Music clockTick;
+	Music clockTick;
 	if (!clockTick.openFromFile("resources/clock-1.wav"))
 		return EXIT_FAILURE;
 	clockTick.setLoop(true);
 	clockTick.play();
 
 	// Создание фона для часов
-	sf::Texture clockImage;
+	Texture clockImage;
 	if (!clockImage.loadFromFile("resources/clock-image.jpg"))
 	{
 		return EXIT_FAILURE;
 	}
 
 	clockCircle.setTexture(&clockImage);
-	clockCircle.setTextureRect(sf::IntRect(40, 0, 500, 500));
+	clockCircle.setTextureRect(IntRect(40, 0, 500, 500));
 
 	while (window.isOpen())
 	{
 		// Обработка событий
-		sf::Event event;
+		Event event;
 		while (window.pollEvent(event))
 		{
 			// Окно закрыто: выход
-			if (event.type == sf::Event::Closed)
+			if (event.type == Event::Closed)
 				window.close();
 		}
 
@@ -117,7 +119,7 @@ int main()
 		secondsHand.setRotation(ptm->tm_sec * 6);
 
 		// Очистить окно
-		window.clear(sf::Color::White);
+		window.clear(Color::White);
 
 		// Нарисовать все части часов
 		window.draw(clockCircle);
